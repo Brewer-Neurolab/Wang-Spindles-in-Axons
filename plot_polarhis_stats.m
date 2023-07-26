@@ -96,9 +96,6 @@ for regi = 1:4
 
     [f,gof]=fit(log(binCenter)', meanC', 'gauss1');
 
-    %     if regi==3
-    %         f = fit(log(binCenter)', meanC', 'gauss1','Exclude', find(ismember(meanC',maxk(meanC',2))));
-    %     end
 
     mu = f.b1; sigma = f.c1/sqrt(2);
     moment_table.regi(regi+co)=regi;
@@ -242,12 +239,6 @@ for i=1:4
         tmp1=tab.angle{1, j};
         temp_set1=[temp_set1,tmp1{1+(i-1)*5},tmp1{2+(i-1)*5},tmp1{3+(i-1)*5},tmp1{4+(i-1)*5},tmp1{5+(i-1)*5}];
     end
-%     polarhistogram(temp_set1,50)
-%    [avg_spike_angle(i),magnitude(i),~,~]=circ_mean(temp_set1);
-    % hold on;
-    % polarplot(avg_spike_angle(i),magnitude(i),'r-')
-%     title (region(i))
-%     saveas(gcf,strcat("Angle",region(i)),'png')
 
 end
 if ~exist('angle', 'dir')
@@ -279,11 +270,10 @@ for i=1:4
             amp_a=tmp2{k+(i-1)*5}./tmp3{k+(i-1)*5};
             tmp_ind=[];
             for l=1:numel(tmp4{k+(i-1)*5})
-               % if amp_a(l)>=cutoff(i)
+
                     index_g=ones(1,tmp4{k+(i-1)*5}(l));
-                %else
-                  %  index_g=zeros(1,tmp4{k+(i-1)*5}(l));
-                %end
+
+
                 tmp_ind=[tmp_ind,index_g];
             end
             angle_plot=tmp1{k+(i-1)*5};
@@ -294,51 +284,15 @@ for i=1:4
 
             if Index_fd{j, k+(i-1)*5} == 'ff'
 
-%                figure
-%                 h=polarhistogram(angle_plot(tmp_ind==1),50,'FaceColor','r');
-% 
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==1));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}),'png')
                 reg_setff_h=[reg_setff_h,angle_plot(tmp_ind==1)];
-
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==0),50,'FaceColor','m');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==0));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}," smaller"),'png')
-%                 reg_setff_l=[reg_setff_l,angle_plot(tmp_ind==0)];
 
             end
 
             if Index_fd{j, k+(i-1)*5} == 'fb'
-%                figure
-%                 h=polarhistogram(angle_plot(tmp_ind==1),50,'FaceColor','b');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%               %  [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==1));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}),'png')
+
                 reg_setfb_h=[reg_setfb_h,angle_plot(tmp_ind==1)];
 
 
-
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==0),50,'FaceColor','c');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==0));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}," smaller"),'png')
-%                 reg_setfb_l=[reg_setfb_l,angle_plot(tmp_ind==0)];
             end
         end
         cd ..
@@ -351,11 +305,7 @@ for i=1:4
 
     end
 
-    %[avg_spike_angle(i),magnitude(i),~,~]=circ_mean(temp_set1);
-    % hold on;
-    % polarplot(avg_spike_angle(i),magnitude(i),'r-')
 
-    % FF h
 
     sz=0.0175;
 figure

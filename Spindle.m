@@ -1,7 +1,7 @@
-function [gap,len,integral_conv,pl,ph,pc,re_spike,re_spindle,peak,s_angle,spike_count]=Spindle(data,data2,data3)
+function [gap,len,integral_conv,pl,ph,pc,re_spike,re_spindle,peak,s_angle,spike_count]=Spindle(data,data3)
 % out put zeroing for noise channel
-fc1=10;%10
-fc2=16;%16
+fc1=10;
+fc2=16;
 fs=25000;
 spindle_only=[];
 gap=[];
@@ -21,32 +21,11 @@ T_spindle=[];
 T_spike=[];
 spike_array(1:7500000)=0;
 s_in=data;
-% [A,B,C,D] = butter(6,5/(fs/2),'high');
-% %[B,A] = butter(3,[fc1/(fs/2),fc2/(fs/2)],'bandpass');
-% [sos,g] = ss2sos(A,B,C,D);
-% s_out1=filtfilt(sos,g,s_in);
-% [A,B,C,D] = butter(8,100/(fs/2),'low');
-% [sos,g] = ss2sos(A,B,C,D);
-% s_out=filtfilt(sos,g,s_out1);
-% s_in=medfilt1(s_out,10);
-% signal frequency fitlerting
- % sampling frequency
 x=[1/fs:1/fs:300]; % time axis
 N=0.5*fs;
-% [A,B,C,D] = butter(3,100/(fs/2),'low');
-% [B,A] = butter(3,[fc1/(fs/2),fc2/(fs/2)],'bandpass');
-% [sos,g] = ss2sos(A,B,C,D);
-%s_out2=filtfilt(sos,g,s_in);
 %% Fitler for spindle
-[A,B,C,D] = butter(3,[1/(fs/2),50/(fs/2)],'bandpass');
-[sos,g] = ss2sos(A,B,C,D);
-s_625=filtfilt(sos,g,s_in);
 
-
-
-%[A,B,C,D] = butter(3,[fc1/(fs/2),fc2/(fs/2)],'bandpass'); % 3
 [A,B,C,D] = butter(6,fc1/(fs/2),'high');
-%[B,A] = butter(3,[fc1/(fs/2),fc2/(fs/2)],'bandpass');
 [sos,g] = ss2sos(A,B,C,D);
 s_out1=filtfilt(sos,g,s_in);
 [A,B,C,D] = butter(8,fc2/(fs/2),'low');
@@ -58,31 +37,21 @@ fcuts = [0.1 10 16 25000];
 mags = [0 1 0];
 devs = [0.01 0.05 0.01];
 
-% [n,Wn,beta,ftype] = kaiserord(fcuts,mags,devs,fsamp);
-% n = n + rem(n,2);
-% hh = fir1(n,Wn,ftype,kaiser(n+1,beta),'noscale');
-% s_out=filtfilt(hh,1,s_in);
-
-% [A,B,C,D] = butter(6,[fc1/(fs/2),fc2/(fs/2)],'bandpass'); % 3
-% [sos,g] = ss2sos(A,B,C,D);
-% s_out=filtfilt(sos,g,s_out2);
-% s_out=sosfilt(sos,s_in);
-% sf=fft(s_out);
-s_out=detrend(s_out);
 % envelope generation
 h_s=hilbert(s_out);
 h_s=abs(h_s);
-gw=gausswin(numel(x)/2500,2.5); % questionable convolution
-%conv_s=conv(h_s,gw,'same')/(numel(x)/6250);
+gw=gausswin(numel(x)/2500,2.5); 
 conv_s=h_s;
+
 % spindle detection
 S_d=std(s_out);
 me=mean(s_out);
 
 upper_thr=me+2.5*S_d;
 lower_thr=me+1.5*S_d;
+
 % Once excedes the Upper threshold, classify as spindle, and after excedes the lower threshold for at least 500ms, classify as spindles
-abs_lowethr=2; %uV %10,2
+abs_lowethr=2; %uV, used to filter out noise channel with low amplitude of signals
 I_l=find(conv_s>lower_thr & conv_s>abs_lowethr);
 I_h=find(conv_s>upper_thr & conv_s>abs_lowethr);
 c=1;
@@ -122,7 +91,6 @@ if isempty(p_s)
     ylabel('Amplitude(uV)')
     hold on;
     plot(x,conv_s);
-%    pause
     return
 else
     % spindle recording
@@ -182,7 +150,6 @@ spindel=spindel(spindel~=0);
 pl=sort([pl_l,pl_h]);
 ph=sort([ph_l,ph_h]);
 re=1;
-% disp(numel(pl))
 mark=0;
 while mark~=1
     gap=pl(2:end)-ph(1:end-1);
@@ -213,10 +180,6 @@ end
 %% Spike
 index=floor(data3/1000*fs);
 spike_array(index)=1;
-%
-% f_spike = bandpass(data2,[300,10000],fs);
-% h_sk=abs(hilbert(f_spike));
-% gw=gausswin(numel(x)/2500,2.5)/190;
  conv_spike=conv(spike_array,gw,'same');
 
 a=s_out(index);
@@ -250,114 +213,51 @@ s_angle=sig(index_ws);
     spindle_only(1:pl(1))=0;
     pl(numel(pl)+1)=numel(conv_s);
 for i=1:numel(ph)
-    integral_conv(i)=sum(conv_s(pl(i):ph(i)));%trapz(x(pl(i):ph(i)),conv_1(pl(i):ph(i)));%
-    %     temp=abs(s_out(pl(i):ph(i)));
-    integral_raw(i)=sum(s_out(pl(i):ph(i)));%trapz(x(pl(i):ph(i)),temp);%
-    %     T_spindle=[T_spindle,h_s(pl(i):ph(i))];
-    %     T_spike=[T_spike,h_sk(pl(i):ph(i))];
+    integral_conv(i)=sum(conv_s(pl(i):ph(i)));
+
+    integral_raw(i)=sum(s_out(pl(i):ph(i)));
+
     spindle_only(ph(i):pl(i+1))=0;
 end
 
 spindle_only=resample(spindle_only,1,25);
 re_spindle=spindle_only;
-% re_spindle=resample(s_out,1,25);
+
 re_spike=resample(conv_spike,1,25);
 %% ploting
-%{
-tiledlayout(3,1)
-
-ax1 = nexttile;
-plot(x,data)
-
-ax2 = nexttile;
-plot(x,s_in)
-
-%ax2 = nexttile;
-%plot(x,s_out2)
-ax3 = nexttile;
-plot(x,s_out)
-hold on
-plot(x,h_s)
-xlabel('time(s)')
-ylabel('Amplitude(uV)')
-plot(x,conv_s);
-% plot(spindel./fs,conv_s(spindel),'o')
-plot(pl./fs,conv_s(pl),'o')
-plot(ph./fs,conv_s(ph),'o')
-plot(x(index_ws),s_out(index_ws),'o')
-legend('10-16HZ','Hilibert Transform','envelope','start','end')
-lgd.FontSize = 60;
-%
-linkaxes([ax1 ax2 ax3],'x')
-%}
-
-
-
-
 figure
 set(0,'defaultAxesFontSize',32)
 set(0,'defaultAxesTickLength',[0.01,0.02])
 set(0,'defaultaxeslinewidth',2)
 
 tiledlayout(4,1)
-%plot 10-16hz
+
+
 ax1 = nexttile;
 plot(x,s_in,'LineWidth',2)
 xlabel('time(s)')
 ylabel('Amplitude(uV)')
 
-%ax2 = nexttile;
-%plot(x,s_out2)
+
 ax2 = nexttile;
 plot(x,s_out,'LineWidth',2)
 hold on
 plot(x,h_s,'LineWidth',2)
 xlabel('time(s)')
 ylabel('Amplitude(uV)')
-% plot(x,conv_s);
-% plot(spindel./fs,conv_s(spindel),'o')
 plot(pl./fs,conv_s(pl),'o')
 plot(ph./fs,conv_s(ph),'o')
 ylim([-700,700])
-%plot(x(index_ws),s_out(index_ws),'o')
-%legend('10-16HZ','Hilibert Transformed envelope','start','end')
+
 lgd.FontSize = 60;
 ax3 = nexttile(3,[2,1]);
 re_sig=resample(s_in,1,25);
 [wt,f]=cwt(re_sig,1000,FrequencyLimits=[0 350]);
-% 
-% pcolor(1:numel(re_sig)/1000,log2(f1),abs(wt1));
-% shading interp;
+
 fig = plot_cwt(wt, f, 0:0.001:300, [], 0);
 ylim([-2,8])
 linkaxes([ax1 ax2 ax3],'x')
 
-% yline(lower_thr);
-% yline(upper_thr);
-% stairs([0.001:0.001:300],re_spindle)
-% Spikes
-% ax3 = nexttile;
-% 
-% plot(x,spike_array)
-% hold on;
-% nu=[1:numel(x)];
-% % plot(data3/1000,f_spike(index),'ro')
-% plot(x,conv_spike)
-% legend('Spike train','Envelope')
-% 
-% ax4 = nexttile;
-% plot(x,rad2deg(sig))
-% xlabel('time(s)')
-% ylabel('angle(radius)')
-% hold on;
-% plot(x(index_ws),rad2deg(s_angle),'o')
-% legend('Phase Angle','Spike position')
-% 
-% linkaxes([ax1 ax2 ax3 ax4],'x')
-
-% stairs([0.001:0.001:300],re_spike)
-%}
-%}
 end
 
 

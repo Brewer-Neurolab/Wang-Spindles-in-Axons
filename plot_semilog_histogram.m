@@ -61,15 +61,8 @@ for regi = 1:4
 
 
     if regi~=2 & regi~=4
-
         [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss1');
-        mu_ff(regi) = f_ff.b1; sigma_ff(regi) = f_ff.c1;%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-
-
-
-
+        mu_ff(regi) = f_ff.b1; sigma_ff(regi) = f_ff.c1;
         [~,a2]=max(f_ff(log(binCenterff)));
         disp('mod')
         disp(binCenterff(a2))
@@ -84,20 +77,6 @@ for regi = 1:4
         disp(exp(sigma_ff(regi)))
 
         disp(c);disp(n);
-
-        % elseif regi==4
-        %     [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss2','lower',[0,0,0,0,6.3,0]);
-        %     mu_ff1 = f_ff.b1;
-        %     mu_ff2 = f_ff.b2;
-        %     sigma_ff1= f_ff.c1/sqrt(2);
-        %     sigma_ff2= f_ff.c2/sqrt(2);
-        %         disp('median')
-        %     disp(exp(mu_ff1))
-        %     disp(exp(mu_ff2))
-        %         disp('std')
-        %     disp(exp(sigma_ff1))
-        %     disp(exp(sigma_ff2))
-        %      disp(c);disp(n);
     elseif regi~=2
         [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss2');
         mu_ff1 = f_ff.b1;
@@ -150,7 +129,7 @@ for regi = 1:4
     pf.LineStyle = '--';
     pf.LineWidth = 3;
     pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
+
 
 
 end
@@ -163,24 +142,7 @@ stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
 
 xlabel ('log of mean')
-% figure
-% %stats1.means(2)=-1;
-% mu=exp(stats1.means+sigma_ff.^2/2);
-%
-% bar(categorical(stats1.gnames'),mu);
-%
-% hold on
-% % er=errorbar(categorical(stats1.gnames'),10.^stats1.means,10.^ff_means(:,2));
-% % er.Color = [0 0 0];
-% % er.LineStyle = 'none';
-% ylabel ('mean(ms)')
-%
-% er=errorbar(categorical(stats1.gnames'),mu,sqrt(exp(sigma_ff.^2-1).*mu.^2));
-% er.Color = [0 0 0];
-% er.LineStyle = 'none';
-% ylim([0,450])
-% saveas(gcf,strcat("Length anova",'ff'),'png')
-cd ..
+
 
 %% Length FB
 
@@ -304,17 +266,7 @@ saveas(gcf,strcat("Length_060623",'fb'),'png')
 [~,~,stats1] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats2.means(1)=-1;
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% hold on;
-% er=errorbar(categorical(stats1.gnames'),10.^stats1.means,sqrt((10.^(sigma_fb.^2)-1).*10.^(2*stats1.means+sigma_fb.^2)));
-% er.Color = [0 0 0];
-% er.LineStyle = 'none';
-% ylim([0,450])
-% ylabel ('mean(ms)')
-% saveas(gcf,strcat("Length anova",'fb'),'png')
+
 cd ..
 %% Length Paired ANOVA
 for regi=1:4
@@ -443,7 +395,6 @@ for regi = 1:4
     pf.LineStyle = '--';
     pf.LineWidth = 3;
     pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
 
 
 end
@@ -653,8 +604,7 @@ for regi = 1:4
                 temp_setfb=[temp_setfb,tmp1{k+(regi-1)*5}./tmp2{k+(regi-1)*5}];
             end
         end
-        %totaln=numel(temp_setfb)+numel(temp_setff);
-        totaln=numel(temp_setff);
+        totaln=numel(temp_setfb)+numel(temp_setff);
         [hist_objectff,hist_plotff,histcountff(coliff,:)] = log_binned_histogram(temp_setff, binEdge, "pdf",0,totaln);
         coliff=coliff+1;
         n=n+numel(temp_setff);
@@ -803,8 +753,8 @@ for regi = 1:4
                 end
             end
         end
-        %totaln=numel(temp_setfb)+numel(temp_setff);
-        totaln=numel(temp_setfb);
+        totaln=numel(temp_setfb)+numel(temp_setff);
+
         [hist_objectfb,hist_plotfb,histcountfb(colifb,:)] = log_binned_histogram(temp_setfb, binEdge, "pdf",0,totaln);
         colifb=colifb+1;
         n=n+numel(temp_setfb);
