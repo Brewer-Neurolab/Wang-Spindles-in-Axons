@@ -1,4 +1,3 @@
-
 %% polar histogram for phase angle
 
 cutoff=[25,15,15,15];
@@ -14,19 +13,14 @@ ccw=load('matching_table_ccw.mat');
 region=["EC-DG","DG-CA3","CA3-CA1","CA1-EC"];
 cd 'graph'
 for i=1:4
-%     figure
+
     co=1;
     temp_set1=[];
     for j=1:9
         tmp1=tab.angle{1, j};
         temp_set1=[temp_set1,tmp1{1+(i-1)*5},tmp1{2+(i-1)*5},tmp1{3+(i-1)*5},tmp1{4+(i-1)*5},tmp1{5+(i-1)*5}];
     end
-%     polarhistogram(temp_set1,50)
-%     [avg_spike_angle(i),magnitude(i),~,~]=circ_mean(temp_set1);
-    % hold on;
-    % polarplot(avg_spike_angle(i),magnitude(i),'r-')
-%     title (region(i))
-%     saveas(gcf,strcat("Angle",region(i)),'png')
+
 
 end
 if ~exist('angle', 'dir')
@@ -58,130 +52,77 @@ for i=1:4
             amp_a=tmp2{k+(i-1)*5}./tmp3{k+(i-1)*5};
             tmp_ind=[];
             for l=1:numel(tmp4{k+(i-1)*5})
-               % if amp_a(l)>=cutoff(i)
-                    index_g=ones(1,tmp4{k+(i-1)*5}(l));
-                %else
-                  %  index_g=zeros(1,tmp4{k+(i-1)*5}(l));
-                %end
+
+                index_g=ones(1,tmp4{k+(i-1)*5}(l));
+
                 tmp_ind=[tmp_ind,index_g];
             end
             angle_plot=tmp1{k+(i-1)*5};
 
-
-
-
-
             if Index_fd{j, k+(i-1)*5} == 'ff'
 
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==1),50,'FaceColor','r');
-% 
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==1));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}),'png')
-                reg_setff_h=[reg_setff_h,angle_plot(tmp_ind==1)];
 
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==0),50,'FaceColor','m');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==0));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}," smaller"),'png')
-%                 reg_setff_l=[reg_setff_l,angle_plot(tmp_ind==0)];
+                reg_setff_h=[reg_setff_h,angle_plot(tmp_ind==1)];
 
             end
 
             if Index_fd{j, k+(i-1)*5} == 'fb'
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==1),50,'FaceColor','b');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==1));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}),'png')
-                 reg_setfb_h=[reg_setfb_h,angle_plot(tmp_ind==1)];
 
-
-
-%                 figure
-%                 h=polarhistogram(angle_plot(tmp_ind==0),50,'FaceColor','c');
-%                 title (strcat(region(i)," - ",tb{k+(i-1)*5,2}));
-%                 hold on;
-%                 [avg_spike_angle,magnitude,~,~]=circ_mean(angle_plot(tmp_ind==0));
-%                 polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%                 hold off;
-%                 saveas(gcf,strcat(region(i)," - ",tb{k+(i-1)*5,2}," smaller"),'png')
-%                 reg_setfb_l=[reg_setfb_l,angle_plot(tmp_ind==0)];
+                reg_setfb_h=[reg_setfb_h,angle_plot(tmp_ind==1)];
             end
         end
         cd ..
-
-
-
-
-
-
-
     end
 
 
-
-    % FF h
-
-    sz=0.0175;
-
+    sz=0.0175; % Bin size for polar histogram
+    % FF histogram
     if i~=3
-    figure
+        figure
         ax = polaraxes;
-    h=polarhistogram( reg_setff_h,50,'FaceColor','r');
-    bc=convert_edges_2_centers(h.BinEdges);
+        h=polarhistogram( reg_setff_h,50,'FaceColor','r');
+        bc=convert_edges_2_centers(h.BinEdges);
         bc(bc<=0)=2*pi+bc(bc<=0);
-    [pval_ff(i), m] = circ_otest(bc, sz,h.BinCounts);
-    disp(pval_ff(i))
-    disp(m)
+        [pval_ff(i), m] = circ_otest(bc, sz,h.BinCounts);
+        disp(pval_ff(i))
+        disp(m)
 
-    ax.FontSize = 20;
-    title (strcat(region(i)," ff "));
-    hold on;
-    [avg_spike_angle,magnitude,~,~]=circ_mean(bc,h.BinCounts);
+        ax.FontSize = 20;
+        title (strcat(region(i)," ff "));
+        hold on;
+        [avg_spike_angle,magnitude,~,~]=circ_mean(bc,h.BinCounts);
 
-    polarplot([0, avg_spike_angle], [0,magnitude], '-g', 'LineWidth',3) %*sum(h.Values)/50
+        polarplot([0, avg_spike_angle], [0,magnitude], '-g', 'LineWidth',3) %*sum(h.Values)/50
 
-    hold off;
-    saveas(gcf,strcat(region(i)," ff "),'png')
-disp(sum(h.BinCounts))
+        hold off;
+        saveas(gcf,strcat(region(i)," ff "),'png')
+        disp(sum(h.BinCounts))
     else
-    figure
-    ax = polaraxes;
-    h=polarhistogram( reg_setff_h,50,'FaceColor','r');
-    [ centers ] = convert_edges_2_centers( h.BinEdges  );
-    ax.FontSize = 20;
-    title (strcat(region(i)," ff "));
-    hold on;
-    [avg_spike_angle1,magnitude1,~,~]=circ_mean(centers(centers<=0.524 & centers>=-1.047),h.BinCounts((centers<=0.524 & centers>=-1.047)));
-[avg_spike_angle2,magnitude2,~,~]=circ_mean(centers(centers<=3.141 & centers>=1.471),h.BinCounts((centers<=3.141 & centers>=1.471)));
-[avg_spike_angle3,magnitude3,~,~]=circ_mean(centers,h.BinCounts);
-    polarplot([0, avg_spike_angle1], [0,magnitude1], '-y', 'LineWidth',3) %*numel(reg_setff_h(reg_setff_h<=0.524 & reg_setff_h>=-1.047))/12
-polarplot([0, avg_spike_angle2], [0,magnitude2], '-y', 'LineWidth',3) %*numel(reg_setff_h(reg_setff_h<=3.141 & reg_setff_h>=1.471))/12
-polarplot([0, avg_spike_angle3], [0,magnitude3], '-g', 'LineWidth',3) %*numel(reg_setff_h)/12
-    hold off;
-    saveas(gcf,strcat(region(i)," ff "),'png')
-    bc=convert_edges_2_centers(h.BinEdges);
+        figure
+        ax = polaraxes;
+        h=polarhistogram( reg_setff_h,50,'FaceColor','r');
+        [ centers ] = convert_edges_2_centers( h.BinEdges  );
+        ax.FontSize = 20;
+        title (strcat(region(i)," ff "));
+        hold on;
+        [avg_spike_angle1,magnitude1,~,~]=circ_mean(centers(centers<=0.524 & centers>=-1.047),h.BinCounts((centers<=0.524 & centers>=-1.047)));
+        [avg_spike_angle2,magnitude2,~,~]=circ_mean(centers(centers<=3.141 & centers>=1.471),h.BinCounts((centers<=3.141 & centers>=1.471)));
+        [avg_spike_angle3,magnitude3,~,~]=circ_mean(centers,h.BinCounts);
+        polarplot([0, avg_spike_angle1], [0,magnitude1], '-y', 'LineWidth',3)
+        polarplot([0, avg_spike_angle2], [0,magnitude2], '-y', 'LineWidth',3)
+        polarplot([0, avg_spike_angle3], [0,magnitude3], '-g', 'LineWidth',3)
+        hold off;
+        saveas(gcf,strcat(region(i)," ff "),'png')
+        bc=convert_edges_2_centers(h.BinEdges);
         bc(bc<=0)=2*pi+bc(bc<=0);
-    [pval_ff(i), m] = circ_otest(bc,sz,h.BinCounts);
-    disp(pval_ff(i))
-    disp(m)
-    disp(sum(h.BinCounts))
+        [pval_ff(i), m] = circ_otest(bc,sz,h.BinCounts);
+        disp(pval_ff(i))
+        disp(m)
+        disp(sum(h.BinCounts))
     end
 
 
-    % FB h
+    % FB histogram
     figure
     ax = polaraxes;
     h=polarhistogram( reg_setfb_h,50,'FaceColor','b');
@@ -190,7 +131,7 @@ polarplot([0, avg_spike_angle3], [0,magnitude3], '-g', 'LineWidth',3) %*numel(re
     title (strcat(region(i)," fb"));
     hold on;
     [avg_spike_angle,magnitude,~,~]=circ_mean(centers,h.BinCounts);
-    polarplot([0, avg_spike_angle], [0,magnitude], '-g', 'LineWidth',3) %*sum(h.Values)/50
+    polarplot([0, avg_spike_angle], [0,magnitude], '-g', 'LineWidth',3)
     hold off;
     saveas(gcf,strcat(region(i)," fb"),'png')
     bc=convert_edges_2_centers(h.BinEdges);
@@ -199,16 +140,7 @@ polarplot([0, avg_spike_angle3], [0,magnitude3], '-g', 'LineWidth',3) %*numel(re
     disp(pval_fb(i))
     disp(m)
     disp(sum(h.BinCounts))
-    % FB s
-%     figure
-%     h=polarhistogram( reg_setfb_l,50,'FaceColor','c');
-% 
-%     title (strcat(region(i)," fb smaller"));
-%     hold on;
-%     [avg_spike_angle,magnitude,~,~]=circ_mean(reg_setfb_l);
-%     polarplot([0, avg_spike_angle], [0,magnitude*max(h.Values)], '-r', 'LineWidth',3)
-%     hold off;
-%     saveas(gcf,strcat(region(i)," fb smaller"),'png')
+
 end
 
 cd ..

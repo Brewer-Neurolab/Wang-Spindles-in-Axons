@@ -256,7 +256,7 @@ for regi = 1:4
     pf.LineStyle = '--';
     pf.LineWidth = 3;
     pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
+
 
 
 end
@@ -405,21 +405,7 @@ saveas(gcf,strcat("interval_060623",'ff'),'png')
 stats1.means=stats1.means(~isnan(stats1.means));
 stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% % stats1.means(2)=-1;
-% mu=exp(mu_ff(regi)+sigma_ff.^2/2);
-%
-% %bar(categorical(stats1.gnames'),mu)
-% hold on;
-%
-% %  er=errorbar(categorical(stats1.gnames'),mu,sqrt(exp(sigma_ff.^2-1).*mu.^2));
-% %   er.Color = [0 0 0];
-% %  er.LineStyle = 'none';
-%
-% %ylim([0,4])
-% ylabel ('mean(s)')
-% saveas(gcf,strcat("interval anova",'ff'),'png')
+
 cd ..
 %% Interval fb
 
@@ -543,23 +529,6 @@ saveas(gcf,strcat("interval_060623",'fb'),'png')
 [~,~,stats2] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats2,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats2.means(1)=-1;
-% bar(categorical(stats2.gnames'),10.^stats2.means./1000)
-% ylabel ('mean(s)')
-% ylim([0,4])
-% saveas(gcf,strcat("interval anova",'fb'),'png')
-cd ..
-%% feed direction comparison
-% for regi=1:4
-%     r=[r_ff{regi},r_fb{regi}];
-%     regLabel = [repmat("FeedForward",numel(r_ff{regi}),1); repmat("Feedback",numel(r_fb{regi}),1)];
-%     [~,~,stats] = anova1(log(r)',regLabel);
-%     [fb_c,fb_means]=multcompare(stats,0.05,'on','','s');
-% end
-
-
 
 
 
@@ -701,13 +670,7 @@ saveas(gcf,strcat("amplitude_060623",'ff'),'png')
 stats1.means=stats1.means(~isnan(stats1.means));
 stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats1.means(2)=-1;
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% ylabel ('mean(uV)')
-% ylim([0, 45])
-% saveas(gcf,strcat("Amplitude anova",'ff'),'png')
+
 cd ..
 
 %% Amplitude fb
@@ -827,37 +790,8 @@ saveas(gcf,strcat("amplitude_060623",'fb'),'png')
 [~,~,stats1] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% stats1.means(1)=-1;
-%
-% figure
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% ylabel ('mean(uV)')
-% ylim([0, 45])
-% saveas(gcf,strcat("Amplitude anova",'fb'),'png')
+
 cd ..
-
-
-
-
-%% feed direction comparison
-% for regi=1:4
-%     r=[r_ff{regi},r_fb{regi}];
-%     regLabel = [repmat("FeedForward",numel(r_ff{regi}),1); repmat("Feedback",numel(r_fb{regi}),1)];
-%     [~,~,stats1] = anova1(log(r)',regLabel);
-%     [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% end
-%
-%
-%
-%
-
-
-
-
-
-
-
 
 
 

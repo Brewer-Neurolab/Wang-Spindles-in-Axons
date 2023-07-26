@@ -40,13 +40,7 @@ for regi = 1:4
                 P1=P1(f<=16 & f>=10);
                 c_ff=c_ff+1;
                 temp_setff(c_ff,:)=P1;
-%                 if isempty(temp_setff)
-%                     temp_setff=P1;
-%                 else
-%                     for i=1:numel(P1)
-%                     temp_setff(i)=(temp_setff(i)+P1(i))/2;
-%                     end
-%                 end
+
             elseif Index_fd{fi,k+(regi-1)*5}=='fb' & ~isempty(tmp{k+(regi-1)*5})
                 Y = fft(resample(tmp{k+(regi-1)*5},1,1));
                 P2 = abs(Y/L);
@@ -54,13 +48,6 @@ for regi = 1:4
                 P1(2:end-1) = 2*P1(2:end-1);
                 
                 P1=P1(f<=16 & f>=10);
-%                 if isempty(temp_setfb)
-%                     temp_setfb=P1;
-%                 else
-%                     for i=1:numel(P1)
-%                     temp_setfb(i)=(temp_setfb(i)+P1(i))/2;
-%                     end
-%                 end
 
             end
         end
@@ -134,14 +121,7 @@ for regi = 1:4
                 P1 = P2(1:L/2+1);
                 P1(2:end-1) = 2*P1(2:end-1);
                 P1=P1(f<=16 & f>=10);
-%                 if isempty(temp_setff)
-%                     temp_setff=P1;
-%                     disp("Y");
-%                 else
-%                     for i=1:20
-%                     temp_setff(i)=(temp_setff(i)+P1(i))/2;
-%                     end
-%                 end
+
             elseif Index_fd{fi,k+(regi-1)*5}=='fb' & ~isempty(tmp{k+(regi-1)*5})
                                 Y = fft(tmp{k+(regi-1)*5});
                 P2 = abs(Y/L);
@@ -151,13 +131,7 @@ for regi = 1:4
                 P1=P1(f<=16 & f>=10);
                 c_fb=c_fb+1;
                 temp_setfb(c_fb,:)=P1;
-%                 if isempty(temp_setfb)
-%                     temp_setfb=P1;
-%                 else
-%                     for i=1:20
-%                     temp_setfb(i)=(temp_setfb(i)+P1(i))/2;
-%                     end
-%                 end
+
 
             end
         end

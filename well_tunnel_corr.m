@@ -56,25 +56,9 @@ for fi=1:9
                     temp_r=[];
                     temp_l=[];
                     c_m=0;
-                    %                     for m=1:numel(tab.ph{1, fi}{1, k+5})
-                    %                         temp_low=floor(tab.pl{1, fi}{1, k+5}./25);
-                    %                         temp_high=floor(tab.ph{1, fi}{1, k+5}./25);
-                    %                         temp_low(temp_low==0)=1;
-                    %                         if temp_high(m)-temp_low(m)>=10
-                    %                         %try
-                    %                         c_m=c_m+1;
-                    % [r,lags]=xcorr(wells_corr(temp_low(m):temp_high(m)),tunnel_corr{k}(temp_low(m):temp_high(m)),'normalized');
+         
                     [r,lags]=xcorr(wells_corr,tunnel_corr{k},'normalized');
-%                     [temp_r(c_k), I]=max(r);
-%                     temp_l(c_k)=lags(I);
-                    %                          figure
-                    %                         stem(lags,r);
-                    %end
-                    %catch
-                    %    temp_l(m)=nan;
-                    %    temp_r(m)=0;
-                    %end
-                %end
+
                 [corr_r(c_k),I]=max(r);
                 temp_lag(c_k)=lags(I);
                 temp_cor_std(c_k)=std(temp_r);
@@ -218,7 +202,7 @@ for fi=1:9
 
     figure('units','normalized','outerposition',[0 0 1 1])
     for i=1:numel(temp_cor)
-        if  cor_tab.colors{1, fi}(i)~="g" %& temp_cor(i)>=Tresh_cor % & temp_cor(i)>=Tresh_cor
+        if  cor_tab.colors{1, fi}(i)~="g" 
             h1=bar(categorical(temp_names(i)),temp_lag(i));
             set(h1, 'FaceColor', cor_tab.colors{1, fi}(i))
             hold on;
@@ -226,7 +210,7 @@ for fi=1:9
 
     end
     ylabel('lags(ms)')
-%    title(strcat("lag DG-CA3 ",folders(fi)))
+
     hold off;
     saveas(gcf,strcat("lag_DG_CA3 ",folders(fi)),'png')
 end
@@ -291,25 +275,9 @@ for fi=1:9
                     temp_r=[];
                     temp_l=[];
                     c_m=0;
-                    %                     for m=1:numel(tab.ph{1, fi}{1, k+5})
-                    %                         temp_low=floor(tab.pl{1, fi}{1, k+5}./25);
-                    %                         temp_high=floor(tab.ph{1, fi}{1, k+5}./25);
-                    %                         temp_low(temp_low==0)=1;
-                    %                         if temp_high(m)-temp_low(m)>=10
-                    %                         %try
-                    %                         c_m=c_m+1;
-                    % [r,lags]=xcorr(wells_corr(temp_low(m):temp_high(m)),tunnel_corr{k}(temp_low(m):temp_high(m)),'normalized');
+                  
                     [r,lags]=xcorr(wells_corr,tunnel_corr{k},'normalized');
-%                     [temp_r(c_k), I]=max(r);
-%                     temp_l(c_k)=lags(I);
-                    %                          figure
-                    %                         stem(lags,r);
-                    %end
-                    %catch
-                    %    temp_l(m)=nan;
-                    %    temp_r(m)=0;
-                    %end
-                %end
+%           
                 [corr_r(c_k),I]=max(r);
                 temp_lag(c_k)=lags(I);
                 temp_cor_std(c_k)=std(temp_r);

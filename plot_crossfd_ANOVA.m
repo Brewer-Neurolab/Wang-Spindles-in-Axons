@@ -49,7 +49,7 @@ for regi = 1:4
     end
 
     histcountff(~any(~isnan(histcountff), 2),:)=[];
-    meanCff = mean(histcountff,1); %stdCff = stdErr(histcountff,1);
+    meanCff = mean(histcountff,1); 
     meanCff=meanCff(~isnan(meanCff));
     binCenterff=binCenter(~isnan(meanCff));
 
@@ -59,90 +59,10 @@ for regi = 1:4
         Length_ff(regi)={[]};
     end
 
-%{
-    if regi~=3
 
-        [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss1');
-        mu_ff(regi) = f_ff.b1; sigma_ff(regi) = f_ff.c1;%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-
-
-
-
-        [~,a2]=max(f_ff(log(binCenterff)));
-        disp('mod')
-        disp(binCenterff(a2))
-        t_val=f_ff(log(binCenterff))'.*binCenterff;
-        f_mean=mean(t_val);
-        [~,a2]=min(abs(t_val-f_mean));
-        disp('mean')
-        disp(binCenterff(a2))
-        disp('median')
-        disp(exp(mu_ff(regi)))
-        disp('std')
-        disp(exp(sigma_ff(regi)))
-
-        disp(c);disp(n);
-
-        % elseif regi==4
-        %     [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss2','lower',[0,0,0,0,6.3,0]);
-        %     mu_ff1 = f_ff.b1;
-        %     mu_ff2 = f_ff.b2;
-        %     sigma_ff1= f_ff.c1/sqrt(2);
-        %     sigma_ff2= f_ff.c2/sqrt(2);
-        %         disp('median')
-        %     disp(exp(mu_ff1))
-        %     disp(exp(mu_ff2))
-        %         disp('std')
-        %     disp(exp(sigma_ff1))
-        %     disp(exp(sigma_ff2))
-        %      disp(c);disp(n);
-    else
-        [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss2');
-        mu_ff1 = f_ff.b1;
-        mu_ff2 = f_ff.b2;
-        sigma_ff1= f_ff.c1/sqrt(2);
-        sigma_ff2= f_ff.c2/sqrt(2);
-        disp('median')
-        disp(exp(mu_ff1))
-        disp(exp(mu_ff2))
-        disp('std')
-        disp(exp(sigma_ff1))
-        disp(exp(sigma_ff2))
-        disp(c);disp(n);
-    end
-
-
-
-
-    subplot(2,2,figOrder(regi))
-
-
-
-    errorbar(binCenterff, meanCff, stdCff,'k');
-    title(well_regList(regi))
-    xlabel 'Length (ms)', ylabel 'Probability'
-    xlim([100,10^(3.5)]);ylim([0,0.15]);
-    yticks([0:0.02:0.14])
-    xticks([10,100,1000,10000,100000])
-    set(gca, 'xscale','log', 'fontsize',18)
-
-    format_2x2_plot(regi)
-
-    % Overlaying fit
-    hold on
-    fitvals = f_ff(log(binCenterff'));
-    pf = plot(binCenterff, fitvals);
-    pf.LineStyle = '--';
-    pf.LineWidth = 3;
-    pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
-%}
 
 end
 
-%saveas(gcf,strcat("Length_060623",'ff'),'png')
 
 [~,~,stats1] = anova1(r',regLabel1ff);
 stats1.means=stats1.means(~isnan(stats1.means));
@@ -150,23 +70,7 @@ stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
 
 xlabel ('log of mean')
-% figure
-% %stats1.means(2)=-1;
-% mu=exp(stats1.means+sigma_ff.^2/2);
-%
-% bar(categorical(stats1.gnames'),mu);
-%
-% hold on
-% % er=errorbar(categorical(stats1.gnames'),10.^stats1.means,10.^ff_means(:,2));
-% % er.Color = [0 0 0];
-% % er.LineStyle = 'none';
-% ylabel ('mean(ms)')
-%
-% er=errorbar(categorical(stats1.gnames'),mu,sqrt(exp(sigma_ff.^2-1).*mu.^2));
-% er.Color = [0 0 0];
-% er.LineStyle = 'none';
-% ylim([0,450])
-% saveas(gcf,strcat("Length anova",'ff'),'png')
+
 cd ..
 
 %% Length FB
@@ -259,49 +163,13 @@ for regi = 1:4
     end
 
 
-
-%     subplot(2,2,figOrder(regi))
-% 
-% 
-% 
-%     errorbar(binCenterfb, meanCfb, stdCfb,'k');
-%     title(well_regList(regi))
-%     xlabel 'Length (ms)', ylabel 'Probability'
-%     xlim([100,10^(3.5)]);ylim([0,0.14]);
-%     yticks([0:0.02:0.14])
-%     xticks([10,100,1000,10000,100000])
-%     set(gca, 'xscale','log', 'fontsize',18)
-% 
-%     format_2x2_plot(regi)
-% 
-%     % Overlaying fit
-%     hold on
-%     fitvals = f_fb(log10(binCenterfb)');
-%     pf = plot(binCenterfb, fitvals);
-%     pf.LineStyle = '--';
-%     pf.LineWidth = 3;
-%     pf.Color = 'r';
-%     %    R_square(regi)=gof.rsquare;
-% 
-% 
 end
-% 
-% saveas(gcf,strcat("Length_060623",'fb'),'png')
+
 
 [~,~,stats1] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats2.means(1)=-1;
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% hold on;
-% er=errorbar(categorical(stats1.gnames'),10.^stats1.means,sqrt((10.^(sigma_fb.^2)-1).*10.^(2*stats1.means+sigma_fb.^2)));
-% er.Color = [0 0 0];
-% er.LineStyle = 'none';
-% ylim([0,450])
-% ylabel ('mean(ms)')
-% saveas(gcf,strcat("Length anova",'fb'),'png')
+
 cd ..
 %% Length Paired ANOVA
 for regi=1:4
@@ -373,93 +241,15 @@ for regi = 1:4
     meanCff=meanCff(~isnan(meanCff));
     binCenterff=binCenter(~isnan(meanCff));
     ISI_ff(regi)={cross_anova_ff};
-%{
 
-    if regi~=3
-        [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss1');
-        mu_ff(regi) = f_ff.b1; sigma_ff(regi) = f_ff.c1/sqrt(2);%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-
-
-        [~,a2]=max(f_ff(log(binCenterff)));
-        disp('mod')
-        disp(binCenterff(a2))
-        t_val=f_ff(log(binCenterff))'.*binCenterff;
-        f_mean=mean(t_val);
-        [~,a2]=min(abs(t_val-f_mean));
-        disp('mean')
-        disp(binCenterff(a2))
-        disp('median')
-        disp(exp(mu_ff(regi)))
-        disp('std')
-        disp(exp(sigma_ff(regi)))
-
-        disp(c);disp(n);
-
-    else
-        [f_ff,gof_ff]=fit(log(binCenterff'), meanCff', 'gauss2');
-        mu_ff1 = f_ff.b1;
-        mu_ff2 = f_ff.b2;
-        sigma_ff1= f_ff.c1/sqrt(2);
-        sigma_ff2= f_ff.c2/sqrt(2);
-        disp('median')
-        disp(exp(mu_ff1))
-        disp(exp(mu_ff2))
-        disp('std')
-        disp(exp(sigma_ff1))
-        disp(exp(sigma_ff2))
-        disp(c);disp(n);
-    end
-
-
-    subplot(2,2,figOrder(regi))
-
-
-
-    errorbar(binCenterff./1000, meanCff, stdCff,'k');
-    title(well_regList(regi))
-    xlabel 'Interval (s)', ylabel 'Probability'
-    xlim([0.1,1000]);ylim([0,0.1]);
-    yticks([0:0.01:0.1])
-    xticks([1,10,100])
-    set(gca, 'xscale','log', 'fontsize',18)
-
-    format_2x2_plot(regi)
-
-    % Overlaying fit
-    hold on
-    fitvals = f_ff(log(binCenterff'));
-    pf = plot(binCenterff./1000, fitvals);
-    pf.LineStyle = '--';
-    pf.LineWidth = 3;
-    pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
-
-%}
 end
 
-%saveas(gcf,strcat("interval_060623",'ff'),'png')
-%
+
 [~,~,stats1] = anova1(r',regLabel1ff);
 stats1.means=stats1.means(~isnan(stats1.means));
 stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% % stats1.means(2)=-1;
-% mu=exp(mu_ff(regi)+sigma_ff.^2/2);
-%
-% %bar(categorical(stats1.gnames'),mu)
-% hold on;
-%
-% %  er=errorbar(categorical(stats1.gnames'),mu,sqrt(exp(sigma_ff.^2-1).*mu.^2));
-% %   er.Color = [0 0 0];
-% %  er.LineStyle = 'none';
-%
-% %ylim([0,4])
-% ylabel ('mean(s)')
-% saveas(gcf,strcat("interval anova",'ff'),'png')
+
 cd ..
 %% Interval fb
 
@@ -512,72 +302,14 @@ for regi = 1:4
         regLabel1fb = [regLabel1fb; repmat(categorical(region(regi)),numel(temp_setfb),1)];
     end
     ISI_fb(regi)={cross_anova_fb};
-    %{
-    histcountfb(~any(~isnan(histcountfb), 2),:)=[];
-    meanCfb = mean(histcountfb,1); %stdCfb = stdErr(histcountfb,1);
-    meanCfb=meanCfb(~isnan(meanCfb));
-    binCenterfb=binCenter(~isnan(meanCfb));
 
-    [f_fb,gof_fb]=fit(log10(binCenterfb)', meanCfb', 'gauss1');%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-    mu_fb(regi) = f_fb.b1; sigma_fb(regi) = f_fb.c1/sqrt(2);
-
-    [~,a2]=max(f_fb(log10(binCenterfb)));
-    disp('mod')
-    disp(binCenterfb(a2))
-    t_val=f_fb(log10(binCenterfb))'.*binCenterfb;
-    f_mean=mean(t_val);
-    [~,a2]=min(abs(t_val-f_mean));
-    disp('mean')
-    disp(binCenterfb(a2))
-    disp('median')
-    disp(10^mu_fb(regi))
-    disp('std')
-    disp(10.^sigma_fb(regi))
-    disp(c);disp(n);
-
-
-
-
-    subplot(2,2,figOrder(regi))
-
-
-
-    errorbar(binCenterfb./1000, meanCfb, stdCfb,'k');
-    title(well_regList(regi))
-    xlabel 'Interval (s)', ylabel 'Probability'
-    xlim([0.1,1000]);ylim([0,0.1]);
-    yticks([0:0.01:0.1])
-    xticks([1,10,100])
-    set(gca, 'xscale','log', 'fontsize',18)
-
-    format_2x2_plot(regi)
-
-    % Overlaying fit
-    hold on
-    fitvals = f_fb(log10(binCenterfb)');
-    pf = plot(binCenterfb./1000, fitvals);
-    pf.LineStyle = '--';
-    pf.LineWidth = 3;
-    pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
-
-%}
 end
 
-%saveas(gcf,strcat("interval_060623",'fb'),'png')
 
 [~,~,stats2] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats2,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats2.means(1)=-1;
-% bar(categorical(stats2.gnames'),10.^stats2.means./1000)
-% ylabel ('mean(s)')
-% ylim([0,4])
-% saveas(gcf,strcat("interval anova",'fb'),'png')
+
 cd ..
 
 %% Length Paired ANOVA
@@ -651,98 +383,15 @@ for regi = 1:4
         regLabel1ff = [regLabel1ff; repmat(categorical(region(regi)),numel(temp_setff),1)];
     end
     AMP_ff(regi)={cross_anova_ff};
-%{
-    histcountff(~any(~isnan(histcountff), 2),:)=[];
-    meanCff = mean(histcountff,1); stdCff = stdErr(histcountff,1);
-    meanCff=meanCff(~isnan(meanCff));
-    binCenterff=binCenter(~isnan(meanCff));
 
-
-
-    if regi~=3
-
-        [f_ff,gof_ff]=fit(log10(binCenterff)', meanCff', 'gauss1');%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-        mu_ff(regi) = f_ff.b1; sigma_ff(regi) = f_ff.c1/sqrt(2);
-
-        [~,a2]=max(f_ff(log10(binCenterff)));
-        disp('mod')
-        disp(binCenterff(a2))
-        t_val=f_ff(log10(binCenterff))'.*binCenterff;
-        f_mean=mean(t_val);
-        [~,a2]=min(abs(t_val-f_mean));
-        disp('mean')
-        disp(binCenterff(a2))
-        disp('median')
-        disp(10^mu_ff(regi))
-        disp('std')
-        disp(10.^sigma_ff(regi))
-        disp(c);disp(n);
-    else
-        [f_ff,gof_ff]=fit(log10(binCenterff)', meanCff', 'gauss2');%,'Lower',[0,0,0,0,2,0,0,3,0]);
-
-
-        mu_ff1 = f_ff.b1;  mu_ff2 = f_ff.b2; sigma_ff1 = f_ff.c1;sigma_ff2 = f_ff.c2;
-
-        [~,a2]=max(f_ff(log10(binCenterff)));
-        disp('mod')
-        disp(binCenterff(a2))
-        t_val=f_ff(log10(binCenterff))'.*binCenterff;
-        f_mean=mean(t_val);
-        [~,a2]=min(abs(t_val-f_mean));
-        disp('mean')
-        disp(binCenterff(a2))
-        disp('median')
-        disp(10^mu_ff1)
-        disp(10^mu_ff2)
-        disp('std')
-        disp(10.^sigma_ff1)
-        disp(10.^sigma_ff2)
-        disp(c);disp(n);
-
-    end
-
-
-    subplot(2,2,figOrder(regi))
-
-
-
-    errorbar(binCenterff, meanCff, stdCff,'k');
-    title(well_regList(regi))
-    xlabel 'Amplitude (uV)', ylabel 'Probability'
-    xlim([0,10^(3)]);ylim([0,0.14]);
-    yticks([0:0.02:0.14])
-    xticks([0,10,100,1000])
-    set(gca, 'xscale','log', 'fontsize',18)
-
-    format_2x2_plot(regi)
-
-    % Overlaying fit
-    hold on
-    fitvals = f_ff(log10(binCenterff)');
-    pf = plot(binCenterff, fitvals);
-    pf.LineStyle = '--';
-    pf.LineWidth = 3;
-    pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
-
-%}
 end
 
-%saveas(gcf,strcat("amplitude_060623",'ff'),'png')
 
 [~,~,stats1] = anova1(r',regLabel1ff);
 stats1.means=stats1.means(~isnan(stats1.means));
 stats1.n=stats1.n(stats1.n~=0);
 [ff_c,ff_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% figure
-% %stats1.means(2)=-1;
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% ylabel ('mean(uV)')
-% ylim([0, 45])
-% saveas(gcf,strcat("Amplitude anova",'ff'),'png')
+
 cd ..
 
 %% Amplitude fb
@@ -797,74 +446,13 @@ for regi = 1:4
         regLabel1fb = [regLabel1fb; repmat(categorical(region(regi)),numel(temp_setfb),1)];
     end
     AMP_fb(regi)={cross_anova_fb};
-    %{
-    histcountfb(~any(~isnan(histcountfb), 2),:)=[];
-    meanCfb = mean(histcountfb,1); stdCfb = stdErr(histcountfb,1);
-    meanCfb=meanCfb(~isnan(meanCfb));
-    binCenterfb=binCenter(~isnan(meanCfb));
-
-    if regi~=1
-        [f_fb,gof_fb]=fit(log10(binCenterfb)', meanCfb', 'gauss1');%,'Lower',[0,0,0,0,2,0,0,3,0]);
-        mu_fb(regi) = f_fb.b1; sigma_fb(regi) = f_fb.c1;
-        disp('mean')
-        disp(binCenterfb(a2))
-        disp('median')
-        disp(10^mu_fb(regi))
-        disp('std')
-        disp(10.^sigma_fb(regi))
-        disp(c);disp(n);
-    else
-        [f_fb,gof_fb]=fit(log10(binCenterfb)', meanCfb', 'gauss2');%,'Lower',[0,0,0,0,2,0,0,3,0]);
-        mu_fb(regi) = f_fb.b1; sigma_fb1 = f_fb.c1; sigma_fb2 = f_fb.c2;
-        disp('median')
-        disp(exp(f_fb.b1))
-        disp(exp(f_fb.b2))
-        disp('std')
-        disp(exp(sigma_fb1))
-        disp(exp(sigma_fb2))
-        disp(c);disp(n);
-    end
-
-
-
-    subplot(2,2,figOrder(regi))
-
-
-
-    errorbar(binCenterfb, meanCfb, stdCfb,'k');
-    title(well_regList(regi))
-    xlabel 'Amplitude (uV)', ylabel 'Probability'
-    xlim([0,10^(3)]);ylim([0,0.14]);
-    yticks([0:0.02:0.14])
-    xticks([0,10,100,1000])
-    set(gca, 'xscale','log', 'fontsize',18)
-
-    format_2x2_plot(regi)
-
-    % Overlaying fit
-    hold on
-    fitvals = f_fb(log10(binCenterfb)');
-    pf = plot(binCenterfb, fitvals);
-    pf.LineStyle = '--';
-    pf.LineWidth = 3;
-    pf.Color = 'r';
-    %    R_square(regi)=gof.rsquare;
-
-    %}
+    
 end
 
-%saveas(gcf,strcat("amplitude_060623",'fb'),'png')
 [~,~,stats1] = anova1(r',regLabel1fb);
 
 [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% xlabel ('log of mean')
-% stats1.means(1)=-1;
-%
-% figure
-% bar(categorical(stats1.gnames'),10.^stats1.means)
-% ylabel ('mean(uV)')
-% ylim([0, 45])
-% saveas(gcf,strcat("Amplitude anova",'fb'),'png')
+
 cd ..
 
 %% Length Paired ANOVA
@@ -883,20 +471,6 @@ for regi=1:4
         tab_ANOVA(regi)={paired_c};
     end
 end
-
-
-%% feed direction comparison
-% for regi=1:4
-%     r=[r_ff{regi},r_fb{regi}];
-%     regLabel = [repmat("FeedForward",numel(r_ff{regi}),1); repmat("Feedback",numel(r_fb{regi}),1)];
-%     [~,~,stats1] = anova1(log(r)',regLabel);
-%     [fb_c,fb_means]=multcompare(stats1,0.05,'on','','s');
-% end
-%
-%
-%
-%
-
 
 
 

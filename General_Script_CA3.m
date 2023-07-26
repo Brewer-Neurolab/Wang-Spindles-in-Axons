@@ -1,5 +1,6 @@
- clear all; %close all; clc
+ clear all; 
 load matching_table_ccw.mat
+% loading order of raw data
 folders=["ECDGCA3CA1 19914 160127 160217 d21 5minspont000_mat_files",...
     "ECDGCA3CA1 19914 160127 160303 d37 5minspont000_mat_files",...
 "ECDGCA3CA1 19908 150729 150823 d25 5minspont000_mat_files",...
@@ -9,6 +10,7 @@ folders=["ECDGCA3CA1 19914 160127 160217 d21 5minspont000_mat_files",...
 "ECDGCA3CA1 19911 160518 160610 d22 5minspont000_mat_files",...
 "ECDGCA3CA1 24574 160727 160818 d22 5minspont000_mat_files",...  
 "ECDGCA3CA1 19914 150805 150828 d25 5minspont000_mat_files"];
+% loading order of spike data
 s_folders=["ECDGCA3CA1 19914 160127 160217 d21 5minspont0001_mat_files",...
     "ECDGCA3CA1 19914 160127 160303 d37 5minspont0001_mat_files",...
 "ECDGCA3CA1 19908 150729 150823 d25 5minspont0001_mat_files",...
@@ -38,12 +40,10 @@ for j=1:9 %9:9
     Interval(1:20)=cell(1,20);
     Length(1:20)=cell(1,20);
     Integral_conv(1:20)=cell(1,20);
-    for i=1:19 %13
+    for i=1:19 
         %load Spindle
         cd('Spindle')
         cd(folders(j))
-%         temp_dir= convertStringsToChars(matching_table{i,2})
-%         temp_dir(strfind(temp_dir,'-'):end)=[];
         temp_dir=dir_lis(i);
         Chanel_Name{i}={temp_dir};
         temp_dir1=strcat(temp_dir,'.mat')
@@ -79,26 +79,22 @@ for j=1:9 %9:9
         po_l(i)={pl};
         po_h(i)={ph};
         pcs(i)={pc};
-        datak(i)={data3};
         re_spik(i)={re_spike};
         re_spin(i)={re_spindle};
         peak_amp(i)={peak};
         an(i)={s_angle};
         sc(i)={spike_count};
-        %         conv(i)={conv_s};
-        %         sig(i)={s_out};
+
     end
-    tab.Fol(j)={folders(j)};
-    tab.In(j)={Interval};
-    tab.Len(j)={Length};
-    tab.IC(j)={Integral_conv};
-    tab.pl(j)={po_l};
-    tab.ph(j)={po_h};
-    tab.pc(j)={pcs};
-    tab.data3(j)={datak};
-    tab.rspike(j)={re_spik};
-    tab.rspin(j)={re_spin};
-    tab.peak_amp(j)={peak_amp};
-    tab.angle(j)={an};
-    tab.spik_n(j)={sc};
+    tab.Fol(j)={folders(j)};    % folder list
+    tab.In(j)={Interval};       % Inter Spindle Interval
+    tab.Len(j)={Length};        % Length of Spindle
+    tab.IC(j)={Integral_conv};  % Intergal of Spindle
+    tab.pl(j)={po_l};           % start position of Spindle
+    tab.ph(j)={po_h};           % End position of Spindle           
+    tab.rspike(j)={re_spik};    % Resample of Spiking data
+    tab.rspin(j)={re_spin};     % Spindle only data resampled to 1000 Hz
+    tab.angle(j)={an};          % Phase angle of spindle during spike
+    tab.spik_n(j)={sc};         % Spike Count
+end
 end
